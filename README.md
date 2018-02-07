@@ -34,3 +34,9 @@ Rank    Team/System  Accuracy
 22             RW2C  0.50
 23         ztangfdu  0.46
 ```
+
+## Further information
+
+If you have any questions regarding your submission, please contact the task organizer: `habernal at ukp.informatik.tu-darmstadt.de`
+
+For some team names, we used the CodaLab as they (1) either provided very long system name which does not fit the table or (2) has not replied to our inquiry about system name and details. If you want to change your name, please contact us.
