@@ -10,29 +10,29 @@ It contains all files submitted during the test phase, the evaluation and rankin
 
 ```
 Rank    Team/System  Accuracy
- 1             GIST  0.71
- 2            rgtjf  0.61
- 3         blcu_nlp  0.61
- 4             ECNU  0.60
- 5         NLITrans  0.59
- 6            Joker  0.59
- 7         YNU_Deep  0.58
- 8          mingyan  0.58
- 9           ArcNet  0.58
- 9          UniMelb  0.58
-11          TRANSRW  0.57
-12            lyb3b  0.57
-13          SNU_IDS  0.57
-14       ArgEns-GRU  0.56
-15        ITNLP-ARC  0.55
-16         YNU-HPCC  0.55
-17        abrassard  0.54
-18              HHU  0.53
-19  Random baseline  0.53
-20       Deepfinder  0.52
-21              ART  0.52
-22             RW2C  0.50
-23         ztangfdu  0.46
+ 1             GIST  0.712
+ 2            rgtjf  0.613
+ 3         blcu_nlp  0.606
+ 4             ECNU  0.604
+ 5         NLITrans  0.590
+ 6            Joker  0.586
+ 7         YNU_Deep  0.583
+ 8          mingyan  0.581
+ 9           ArcNet  0.577
+ 9          UniMelb  0.577
+11          TRANSRW  0.570
+12            lyb3b  0.568
+13          SNU_IDS  0.565
+14       ArgEns-GRU  0.556
+15        ITNLP-ARC  0.552
+16         YNU-HPCC  0.550
+17        abrassard  0.541
+18              HHU  0.534
+19  Random baseline  0.527
+20       Deepfinder  0.525
+21              ART  0.518
+22             RW2C  0.500
+23         ztangfdu  0.464
 ```
 
 ## Further information
