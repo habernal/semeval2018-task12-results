@@ -26,7 +26,7 @@ Rank    Team/System  Accuracy
 14       ArgEns-GRU  0.556
 15        ITNLP-ARC  0.552
 16         YNU-HPCC  0.550
-17        abrassard  0.541
+17          TakeLab  0.541
 18              HHU  0.534
 19  Random baseline  0.527
 20       Deepfinder  0.525
