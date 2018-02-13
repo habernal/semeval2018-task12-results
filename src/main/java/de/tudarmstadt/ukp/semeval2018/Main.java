@@ -18,7 +18,8 @@
 
 package de.tudarmstadt.ukp.semeval2018;
 
-import org.apache.commons.collections4.ListUtils;
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -30,46 +31,13 @@ import java.util.stream.Collectors;
  */
 public class Main
 {
-    public static void generateListOfAccuracies(List<Participant> participants,
-            Map<String, Integer> goldData)
-    {
 
-        for (Participant p : participants) {
-            System.out.printf("%s\t", p.getUserName());
-            for (int r = 1; r < 1000; r++) {
-
-                List<String> goldIDs = new ArrayList<>(goldData.keySet());
-                Collections.shuffle(goldIDs, new Random(r));
-                // split gold data into 10 buckets
-                int bucketSize = (int) Math.ceil((double) goldIDs.size() / (double) 10);
-                List<List<String>> buckets = ListUtils.partition(goldIDs, bucketSize);
-
-                SortedMap<String, Integer> predictions = p.getPredictions();
-
-                for (List<String> bucket : buckets) {
-                    int bucketSuccess = 0;
-                    int bucketFailures = 0;
-                    for (String id : bucket) {
-                        boolean success = predictions.get(id).equals(goldData.get(id));
-
-                        if (success) {
-                            bucketSuccess++;
-                        }
-                        else {
-                            bucketFailures++;
-                        }
-                    }
-
-                    double bucketAccuracy =
-                            (double) bucketSuccess / ((double) bucketSuccess + bucketFailures);
-                    System.out.printf(Locale.ENGLISH, "%.3f, ", bucketAccuracy);
-                }
-            }
-                System.out.println();
-        }
-
-    }
-
+    /**
+     * Prints the final rank of all participants, ordered by accuracy.
+     *
+     * @param participants participants
+     * @param goldData     gold data
+     */
     public static void finalRank(List<Participant> participants, Map<String, Integer> goldData)
     {
         SortedMap<Double, List<Participant>> accuracies = new TreeMap<>();
@@ -94,7 +62,7 @@ public class Main
             List<Participant> participantsWithSameAccuracy = entry.getValue();
 
             for (Participant p : participantsWithSameAccuracy) {
-                System.out.printf(Locale.ENGLISH, "%s %s  %.2f%n",
+                System.out.printf(Locale.ENGLISH, "%s %s  %.3f%n",
                         StringUtils.leftPad(String.valueOf(rank), 2),
                         StringUtils.leftPad(p.getShownName(), 16),
                         entry.getKey());
@@ -104,6 +72,12 @@ public class Main
         }
     }
 
+    /**
+     * For each participants, shows the number of correct and incorrect guesses
+     *
+     * @param participants participants
+     * @param goldData     gold data
+     */
     public static void printSuccessFailureCounts(List<Participant> participants,
             Map<String, Integer> goldData)
     {
@@ -114,35 +88,17 @@ public class Main
             long failure = evaluatePredictions.values().stream().filter(val -> !val).count();
 
             System.out.printf(Locale.ENGLISH, "%s\t%d\t%d%n",
-                    StringUtils.leftPad(p.getUserName(), 16),
+                    StringUtils.leftPad(p.getShownName(), 16),
                     success, failure);
         });
     }
 
-    public static void main(String[] args)
-            throws Exception
-    {
-        // all participants with submissions
-        List<Participant> participants = ParticipantManager
-                .loadParticipants(new File("data/submissions/metadata.xml"), false);
-
-        // gold labels
-        Map<String, Integer> goldData = Scorer.readLabelsFromFile(new File("data/gold/truth.txt"));
-
-        finalRank(participants, goldData);
-
-        // remove random baseline
-        List<Participant> trueParticipants = participants.stream()
-                .filter(p -> !p.getUserName().equals("RANDOM_BASELINE")).collect(
-                        Collectors.toList());
-
-        //        problematicInstanceDistribution(trueParticipants, goldData);
-
-//        printSuccessFailureCounts(participants, goldData);
-
-//        generateListOfAccuracies(participants, goldData);
-    }
-
+    /**
+     * Shows problematic instances (distributions of successes)
+     *
+     * @param participants participants
+     * @param goldData     gold data
+     */
     private static void problematicInstanceDistribution(List<Participant> participants,
             Map<String, Integer> goldData)
     {
@@ -170,4 +126,93 @@ public class Main
                         .collect(Collectors.joining(", ")));
 
     }
+
+    /**
+     * Runs and prints Approximate Randomization Test
+     *
+     * @param participants participants
+     * @param goldData     gold data
+     */
+    private static void runApproximateRandomizationTest(List<Participant> participants,
+            SortedMap<String, Integer> goldData)
+    {
+        final Comparator<Participant> ACCURACY_BASED_COMPARATOR = new Comparator<Participant>()
+        {
+            @Override
+            public int compare(Participant o1, Participant o2)
+            {
+                double accuracyP1 = Scorer
+                        .computeAccuracy(Scorer.evaluatePredictions(goldData, o1.getPredictions()));
+                double accuracyP2 = Scorer
+                        .computeAccuracy(Scorer.evaluatePredictions(goldData, o2.getPredictions()));
+
+                int diff = Double.compare(accuracyP2, accuracyP1);
+
+                // or alphabetically, if accuracy is the same
+                if (diff == 0) {
+                    return o1.getShownName().compareTo(o2.getShownName());
+                }
+
+                return diff;
+            }
+        };
+
+        Table<Participant, Participant, Double> pValueTable = TreeBasedTable
+                .create(ACCURACY_BASED_COMPARATOR, ACCURACY_BASED_COMPARATOR);
+
+        List<Participant> sortedParticipants = new ArrayList<>(participants);
+        sortedParticipants.sort(ACCURACY_BASED_COMPARATOR);
+
+        for (int i = 0; i < sortedParticipants.size(); i++) {
+            for (int j = 0; j <= i; j++) {
+
+                Participant p1 = sortedParticipants.get(i);
+                Participant p2 = sortedParticipants.get(j);
+
+                // accuracy on the diagonal
+                if (i == j) {
+                    pValueTable.put(p1, p2, Scorer.computeAccuracy(
+                            Scorer.evaluatePredictions(p1.getPredictions(), goldData)));
+                }
+                else {
+
+                    double pValue = ApproximateRandomizationTest
+                            .pValue(p1.getPredictions(), p2.getPredictions(), goldData);
+                    System.out.printf(Locale.ENGLISH, "%s\t%s\t%.4f%n", p1.getShownName(),
+                            p2.getShownName(), pValue);
+
+                    pValueTable.put(p1, p2, pValue);
+                }
+            }
+        }
+
+        String header = pValueTable.columnKeySet().stream().map(Participant::getShownName)
+                .collect(Collectors.joining("\t"));
+        System.out.println("\t" + header);
+        pValueTable.rowMap().forEach((participant, participantDoubleMap) -> {
+            System.out.printf(participant.getShownName() + "\t");
+            System.out.println(participantDoubleMap.values().stream()
+                    .map(d -> String.format(Locale.ENGLISH, "%.4f", d))
+                    .collect(Collectors.joining("\t")));
+        });
+    }
+
+    public static void main(String[] args)
+            throws Exception
+    {
+        // all participants with submissions
+        List<Participant> participants = ParticipantManager
+                .loadParticipants(new File("data/submissions/metadata-public.xml"));
+
+        // gold labels
+        SortedMap<String, Integer> goldData = Scorer
+                .readLabelsFromFile(new File("data/gold/truth.txt"));
+
+        finalRank(participants, goldData);
+
+        //        problematicInstanceDistribution(trueParticipants, goldData);
+        //        printSuccessFailureCounts(participants, goldData);
+        //        runApproximateRandomizationTest(participants, goldData);
+    }
+
 }

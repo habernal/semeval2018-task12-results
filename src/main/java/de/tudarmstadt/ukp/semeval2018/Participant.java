@@ -29,7 +29,7 @@ public class Participant
 {
     private final String userName;
     private final String submissionID;
-    private boolean discardFromOfficialResult = false;
+    private boolean withdrawn = false;
 
     private String shownName;
 
@@ -83,20 +83,19 @@ public class Participant
     @Override
     public String toString()
     {
-        return "Participant{" +
-                "userName='" + userName + '\'' +
-                ", submissionID='" + submissionID + '\'' +
-                '}';
+        return "Participant{" + "userName='" + userName + '\'' + ", submissionID='" + submissionID
+                + '\'' + ", withdrawn=" + withdrawn + ", shownName='" + shownName + '\''
+                + ", systemName='" + systemName + '\'' + '}';
     }
 
-    public boolean isDiscardFromOfficialResult()
+    public boolean isWithdrawn()
     {
-        return discardFromOfficialResult;
+        return withdrawn;
     }
 
-    public void setDiscardFromOfficialResult(boolean discardFromOfficialResult)
+    public void setWithdrawn(boolean withdrawn)
     {
-        this.discardFromOfficialResult = discardFromOfficialResult;
+        this.withdrawn = withdrawn;
     }
 
     public String getSystemName()

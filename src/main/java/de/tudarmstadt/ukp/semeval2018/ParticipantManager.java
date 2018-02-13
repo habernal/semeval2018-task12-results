@@ -32,8 +32,7 @@ import java.util.stream.Collectors;
  */
 public class ParticipantManager
 {
-    public static List<Participant> loadParticipants(File metadataFile,
-            boolean keepOnlyOfficialResults)
+    public static List<Participant> loadParticipants(File metadataFile)
             throws IOException
     {
         List<Participant> participants = new ArrayList<>();
@@ -51,15 +50,18 @@ public class ParticipantManager
                 String submissionID = el.getAttributeValue("submissionID");
                 String systemName = el.getAttributeValue("systemName");
                 boolean noResponse = "true".equals(el.getAttributeValue("noResponse"));
+                boolean withdrawn = "true".equals(el.getAttributeValue("withdrawn"));
 
                 Participant participant = new Participant(username, submissionID);
-                participant.setDiscardFromOfficialResult(noResponse);
+                participant.setWithdrawn(noResponse);
                 participant.setSystemName(systemName);
+                participant.setWithdrawn(withdrawn);
 
                 String shownName = el.getAttributeValue("shownName");
                 if (shownName != null) {
                     participant.setShownName(shownName);
-                } else {
+                }
+                else {
                     participant.setShownName(participant.getSystemName());
                 }
 
@@ -69,6 +71,8 @@ public class ParticipantManager
                 }
 
                 participants.add(participant);
+
+                System.out.println(participant);
             }
 
         }
@@ -79,12 +83,9 @@ public class ParticipantManager
         participants
                 .forEach(participant -> participant.loadSubmission(metadataFile.getParentFile()));
 
-        // remove those discarded
-        if (keepOnlyOfficialResults) {
-            participants = participants.stream()
-                    .filter(participant -> !participant.isDiscardFromOfficialResult()).collect(
-                            Collectors.toList());
-        }
+        // remove withdrawn submissions
+        participants = participants.stream().filter(participant -> !participant.isWithdrawn())
+                .collect(Collectors.toList());
 
         return participants;
     }
