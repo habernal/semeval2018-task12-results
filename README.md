@@ -4,8 +4,6 @@ This repository contains the official results of the [SemEval 2018 Task 12: The 
 
 It contains all files submitted during the test phase, the evaluation and ranking scripts, as well as the gold data.
 
-*Note*: the gold data will be released first on Tuesday, February 13, 2018
-
 ## Results
 
 ```
@@ -34,6 +32,10 @@ Rank    Team/System  Accuracy
 22         ztangfdu  0.464
 ```
 
+## Reproducibility
+
+To obtain the final ranking, just run the `Main` class from `de.tudarmstadt.ukp.semeval2018`. You need Java 8 and Maven to build and the project.
+
 ## Further information
 
 If you have any questions regarding your submission, please contact the task organizers (`habernal@ukp.informatik.tu-darmstadt.de`).
@@ -43,4 +45,4 @@ For some team names, we used the CodaLab login. There are two reasons for that:
 * Some participants provided very long system name which does not fit the table
 * Some participants have not yet replied to our inquiry about system name and details.
 
-If you want to change your name, feel free to contact us.
+If you want to change your name, feel free to contact us -- best by opening an issue here on GitHub. 
