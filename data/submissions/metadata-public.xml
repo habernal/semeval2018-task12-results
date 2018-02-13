@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is a public XML file with participants name and their final submissions -->
+<metadata>
+	<participant username="kvothe" submissionID="438280" systemName="ArgEns-GRU" />
+	<participant username="cnu" submissionID="438277" systemName="TRANSRW" />
+	<participant username="abrassard" submissionID="438181"
+	             systemName="Skip-Thought based classification" shownName="TakeLab" />
+	<participant username="minerva" submissionID="437959" systemName="ArcNet" />
+	<participant username="hongking9" submissionID="437952" systemName="GIST" />
+	<participant username="Liebeck" submissionID="437892" systemName="HHU" />
+	<participant username="abhishek089" submissionID="437859" systemName="ART" />
+	<participant username="mingyan" submissionID="437786" systemName="simple attention"
+	             shownName="mingyan" />
+	<participant username="galsang" submissionID="437777" systemName="SNU_IDS" />
+	<participant username="ztangfdu" submissionID="437724"
+	             systemName="Neural Matching Models for Argument Reasoning Comprehension Task"
+	             shownName="ztangfdu" />
+	<participant username="RANDOM_BASELINE" submissionID="437684" systemName="Random baseline" />
+	<participant username="aj" submissionID="437591" systemName="UniMelb" />
+	<participant username="hanshan" submissionID="437296"
+	             systemName="NLITrans: Natural Language Inference Transfer model"
+	             shownName="NLITrans" />
+	<participant username="zhimin" submissionID="437256" systemName="RW2C" />
+	<participant username="lanman" submissionID="436471" systemName="ECNU" />
+	<participant username="paopaojingyu" submissionID="435575" systemName="YNU-HPCC" />
+	<participant username="deepioneer" submissionID="434975" systemName="Deepfinder" />
+	<participant username="HITInsun" submissionID="434773" systemName="ITNLP-ARC" />
+	<participant username="rgtjf" submissionID="436419" systemName="" withdrawn="true" />
+	<participant username="Joker" submissionID="435053" systemName="" noResponse="true" />
+	<participant username="lyb3b" submissionID="437000" systemName="lyb3b" />
+	<participant username="YNU_Deep" submissionID="437321" systemName="YNU_Deep" />
+	<participant username="blcu_nlp" submissionID="438097" systemName="" noResponse="true" />
+</metadata>
