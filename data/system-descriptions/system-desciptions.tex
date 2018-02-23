@@ -10,6 +10,10 @@ votes a majority on an ensemble of the following systems. First, a shared GRU ne
 uses a bi-directional LSTM with an attention mechanism on top, followed by a multi-layer perceptron network.
 
 
+\paragraph{blcu\_nlp}
+not only pays attention to the consensual part between each warrant and other information, but also to the contradictory part between two warrants. On the model's input (GloVe embeddings), \emph{warrant0}, \emph{claim}, \emph{reason}, and \emph{debate info} are concatenated in order to perform attention to \emph{warrant1}. Analogous structure is used for attending to \emph{warrant0}. After obtaining vectors `attented\_w0` and `attented\_w1` (referring to the ESIM model \cite{Chen.et.al.2017.ACL.ESIM}), the two warrants are aligned. The similarity matrix helps to highlight the consensual and the contradictory part. The decision is then drawn after passing through feed-forward layers. Majority voting strategy is used in the final ensemble, which is based on five models performing best on the dev data.
+
+
 \paragraph{Deepfinder}
 shares one LSTM layer for \emph{warrant0}, \emph{warrant1}, \emph{claim}, and \emph{reason}, while the \emph{topic} part uses one LSTM alone. All of them share the same word embedding layer before LSTM layers. After that, \emph{warrant0} LSTM output will do dot product with \emph{claim}, \emph{reason} and \emph{claim} individually (similarly, the same hold for \emph{warrant1}). The resulting dot products are concatenated and fed into a softmax layer.
 
