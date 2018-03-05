@@ -19,7 +19,7 @@ shares one LSTM layer for \emph{warrant0}, \emph{warrant1}, \emph{claim}, and \e
 
 
 \paragraph{ECNU}
-modifies the baseline intra-warrant attention \cite{habernal.et.al.2018.NAACL.arct} by using CNN and LSTM for representing each sentence (\emph{claim}, \emph{reason}, \emph{debate}, \emph{warrant0}, and \emph{warrant1}). Different parts of \emph{warrant0} and \emph{warrant1} are used as an attention vector to obtain representation of warrants. Similarly, different parts of \emph{claim} and the opposite \emph{claim} serve as attention for the final representation. The final decision is then a vote from three networks.
+modifies the baseline intra-warrant attention \cite{Habernal.et.al.2018.NAACL.arct} by using CNN and LSTM for representing each sentence (\emph{claim}, \emph{reason}, \emph{debate}, \emph{warrant0}, and \emph{warrant1}). Different parts of \emph{warrant0} and \emph{warrant1} are used as an attention vector to obtain representation of warrants. Similarly, different parts of \emph{claim} and the opposite \emph{claim} serve as attention for the final representation. The final decision is then a vote from three networks.
 
 
 \paragraph{GIST} used pretrained \texttt{word2Vec} embeddings and the ESIM model \cite{Chen.et.al.2017.ACL.ESIM}. The model was trained on SNLI \cite{Bowman.et.al.2015} and MultiNLI \cite{nangia-EtAl:2017:RepEval} datasets and the parameters were frozen afterwards. Then the pairs of sentences were fed into the the ESIM model. For example for \emph{warrant0}, the pairs are \emph{(claim, warrant0)}, \emph{(warrant0, reason)}, and \emph{(warrant0, warrant1)}. Also, another bi-LSTM module encoding \emph{claim}, \emph{warrant} and \emph{reason} is added. The output vectors of each pair and bi-LSTM are concatenated after average and max pooling and the final prediction is made through feed-forward layers.
@@ -61,7 +61,7 @@ learns the semantic representation of sentences (\emph{reason}, \emph{warrants},
 
 
 \paragraph{UniMelb}
-combines 3 stacked LSTMs, one for the \emph{reason}, one for the \emph{claim}, and one shared Siamese Network for the 2 \emph{warrants} under investigation. It generates semantic feature vectors that serve as input to shared compressed feature space by using simple vector operations and semantic similarity classification to enforce the interrelationships between them. In doing so, the aim is to learn an `implication space' through the semantic feature vectors which are able to correctly encode the interrelationships between a reason, a claim, and both the correct and incorrect warrants. The data are augmented by utilizing WordNet synonym fuzzing.
+combines 3 stacked LSTMs, one for the \emph{reason}, one for the \emph{claim}, and one shared Siamese Network for the 2 \emph{warrants} under investigation. It generates semantic feature vectors that serve as input to shared compressed feature space by using simple vector operations and semantic similarity classification to enforce the interrelationships between them. In doing so, the aim is to learn a form of ``generative implication" through the semantic feature vectors which are able to correctly encode the interrelationships between a reason, a claim, and both the correct and incorrect warrants. The data are augmented by utilizing WordNet synonym fuzzing.
 
 
 \paragraph{YNU-HPCC}
