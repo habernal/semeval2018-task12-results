@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -34,11 +35,12 @@ public class Main
 
     /**
      * Prints the final rank of all participants, ordered by accuracy.
-     *
-     * @param participants participants
+     *  @param participants participants
      * @param goldData     gold data
+     * @param latex
      */
-    public static void finalRank(List<Participant> participants, Map<String, Integer> goldData)
+    public static void finalRank(List<Participant> participants, Map<String, Integer> goldData,
+            boolean latex)
     {
         SortedMap<Double, List<Participant>> accuracies = new TreeMap<>();
 
@@ -57,14 +59,35 @@ public class Main
         // print
         List<Map.Entry<Double, List<Participant>>> entries = new ArrayList<>(accuracies.entrySet());
         Collections.reverse(entries);
+
+        if (latex) {
+            System.out.println("\\begin{tabular}{rlr}");
+            System.out.println("\\textbf{Rank} & \\textbf{System} & \\textbf{Accuracy} \\\\ \\hline");
+            printResultTable(entries, "%s & %s & %.3f \\\\%n", participant -> {
+                String name = participant.getShownName().replace("_", "\\_");
+                if (participant.getNoResponse()) {
+                    return name + "*";
+                } else {
+                    return name;
+                }
+            });
+            System.out.println("\\end{tabular}");
+        } else {
+            printResultTable(entries, "%s %s  %.3f%n", Participant::getShownName);
+        }
+    }
+
+    private static void printResultTable(List<Map.Entry<Double, List<Participant>>> entries,
+            String lineFormat, Function<Participant, String> participantPrinter)
+    {
         int rank = 1;
         for (Map.Entry<Double, List<Participant>> entry : entries) {
             List<Participant> participantsWithSameAccuracy = entry.getValue();
 
             for (Participant p : participantsWithSameAccuracy) {
-                System.out.printf(Locale.ENGLISH, "%s %s  %.3f%n",
+                System.out.printf(Locale.ENGLISH, lineFormat,
                         StringUtils.leftPad(String.valueOf(rank), 2),
-                        StringUtils.leftPad(p.getShownName(), 16),
+                        StringUtils.leftPad(participantPrinter.apply(p), 16),
                         entry.getKey());
             }
 
@@ -208,7 +231,10 @@ public class Main
         SortedMap<String, Integer> goldData = Scorer
                 .readLabelsFromFile(new File("data/gold/truth.txt"));
 
-        finalRank(participants, goldData);
+        // plain results
+        finalRank(participants, goldData, false);
+        // latex
+        finalRank(participants, goldData, true);
 
         //        problematicInstanceDistribution(trueParticipants, goldData);
         //        printSuccessFailureCounts(participants, goldData);

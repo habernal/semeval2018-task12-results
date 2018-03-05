@@ -54,6 +54,7 @@ public class ParticipantManager
 
                 Participant participant = new Participant(username, submissionID);
                 participant.setWithdrawn(noResponse);
+                participant.setNoResponse(noResponse);
                 participant.setSystemName(systemName);
                 participant.setWithdrawn(withdrawn);
 

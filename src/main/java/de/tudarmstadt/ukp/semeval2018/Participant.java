@@ -36,6 +36,7 @@ public class Participant
     private String systemName;
 
     private SortedMap<String, Integer> predictions;
+    private boolean noResponse;
 
     public Participant(String lineFromMetadataFile)
             throws IllegalArgumentException
@@ -116,5 +117,20 @@ public class Participant
     public void setShownName(String shownName)
     {
         this.shownName = shownName;
+    }
+
+    public void setNoResponse(boolean noResponse)
+    {
+        this.noResponse = noResponse;
+    }
+
+    public boolean isNoResponse()
+    {
+        return noResponse;
+    }
+
+    public boolean getNoResponse()
+    {
+        return noResponse;
     }
 }
