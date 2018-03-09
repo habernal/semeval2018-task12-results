@@ -1,9 +1,9 @@
 \paragraph{ArcNet}
-uses GloVe embeddings and an LSTM encoder to get the semantic representation of each input (\emph{reason}, \emph{claim}, and both \emph{warrants}). Then an attention mechanism is aligns the \emph{reason} and \emph{warrant} so that the reason-aware warrant representation is generated. Finally, a bilinear function matches the claim and reason-aware warrant. The network is trained to minimize margin loss. The submission was based on an ensemble model of 10 training runs with the identical architecture.
+uses GloVe embeddings and an LSTM encoder to get the semantic representation of each input (\emph{reason}, \emph{claim}, and both \emph{warrants}). Then an attention mechanism aligns the \emph{reason} and the \emph{warrant} so that the reason-aware warrant representation is generated. Finally, a bilinear function matches the claim with the reason-aware warrant. The network is trained to minimize margin loss. The submission was based on an ensemble model of 10 training runs with the identical architecture.
 
 
 \paragraph{ArgEns-GRU}
-votes a majority on an ensemble of the following systems. First, a shared GRU network is used for learning representation of each of the \emph{reason}, \emph{claim}, and both \emph{warrants}, initialized with 100-dimensional GloVe embeddings. Its output is concatenated and passed through a softmax layer for the final predictions. Second, an extension of the GRU with an attention over each of the \emph{reason}, \emph{claim}, and both \emph{warrants}. Finally, another GRU model extended with negation and polarity features.
+votes a majority on an ensemble of the following three systems: First, a shared GRU network that learns one representation of the \emph{reason}, \emph{claim}, and both \emph{warrants} each, initialized with 100-dimensional GloVe embeddings. Its output is concatenated and passed through a softmax layer for the final predictions. Second, an extension of the GRU with an attention on the \emph{reason}, \emph{claim}, and both \emph{warrants} each. And third, another GRU model extended with negation and polarity features.
 
 
 \paragraph{ART}
@@ -11,67 +11,68 @@ uses a bi-directional LSTM with an attention mechanism on top, followed by a mul
 
 
 \paragraph{blcu\_nlp}
-not only pays attention to the consensual part between each warrant and other information, but also to the contradictory part between two warrants. On the model's input (GloVe embeddings), \emph{warrant0}, \emph{claim}, \emph{reason}, and \emph{debate info} are concatenated in order to perform attention to \emph{warrant1}. Analogous structure is used for attending to \emph{warrant0}. After obtaining vectors `attented\_w0` and `attented\_w1` (referring to the ESIM model \cite{Chen.et.al.2017.ACL.ESIM}), the two warrants are aligned. The similarity matrix helps to highlight the consensual and the contradictory part. The decision is then drawn after passing through feed-forward layers. Majority voting strategy is used in the final ensemble, which is based on five models performing best on the dev data.
+not only pays attention to the consensual part between each warrant and other information, but also to the contradictory part between two warrants. On the model's input (GloVe embeddings), \emph{warrant0}, \emph{claim}, \emph{reason}, and \emph{debate info} are concatenated in order to put attention on \emph{warrant1}. An analog structure is used for the attention on \emph{warrant0}. After obtaining two vectors `attented\_w0` and `attented\_w1` --- referring to the ESIM model \cite{Chen.et.al.2017.ACL.ESIM} --- the two warrants are aligned. A similarity matrix helps to highlight the consensual and the contradictory part. The decision is then drawn after passing through feed-forward layers. A majority voting strategy is used in the final ensemble, which is based on five models performing best on the development data.
 
 
 \paragraph{Deepfinder}
-shares one LSTM layer for \emph{warrant0}, \emph{warrant1}, \emph{claim}, and \emph{reason}, while the \emph{topic} part uses one LSTM alone. All of them share the same word embedding layer before LSTM layers. After that, \emph{warrant0} LSTM output will do dot product with \emph{claim}, \emph{reason} and \emph{claim} individually (similarly, the same hold for \emph{warrant1}). The resulting dot products are concatenated and fed into a softmax layer.
+shares one LSTM layer for \emph{warrant0}, \emph{warrant1}, \emph{claim}, and \emph{reason}, while the \emph{topic} part uses one LSTM alone. All of them share the same word embedding layer before LSTM layers. After that, one individual dot product is computed for the output of the \emph{warrant0} LSTM and each of the \emph{claim}, \emph{reason} and \emph{claim} (the same is done for the \emph{warrant1} LSTM). The resulting dot products are concatenated and fed into a softmax layer.
 
 
 \paragraph{ECNU}
-modifies the baseline intra-warrant attention \cite{Habernal.et.al.2018.NAACL.arct} by using CNN and LSTM for representing each sentence (\emph{claim}, \emph{reason}, \emph{debate}, \emph{warrant0}, and \emph{warrant1}). Different parts of \emph{warrant0} and \emph{warrant1} are used as an attention vector to obtain representation of warrants. Similarly, different parts of \emph{claim} and the opposite \emph{claim} serve as attention for the final representation. The final decision is then a vote from three networks.
+modifies the baseline intra-warrant attention \cite{Habernal.et.al.2018.NAACL.arct} by using a CNN and an LSTM for representing each sentence (\emph{claim}, \emph{reason}, \emph{debate}, \emph{warrant0}, and \emph{warrant1}). Different parts of \emph{warrant0} and \emph{warrant1} are used as an attention vector to obtain representations of the warrants. Similarly, different parts of \emph{claim} and the opposite \emph{claim} serve as attention for the final representation. The final decision is then given by a vote from three networks.
 
 
-\paragraph{GIST} used pretrained \texttt{word2Vec} embeddings and the ESIM model \cite{Chen.et.al.2017.ACL.ESIM}. The model was trained on SNLI \cite{Bowman.et.al.2015} and MultiNLI \cite{nangia-EtAl:2017:RepEval} datasets and the parameters were frozen afterwards. Then the pairs of sentences were fed into the the ESIM model. For example for \emph{warrant0}, the pairs are \emph{(claim, warrant0)}, \emph{(warrant0, reason)}, and \emph{(warrant0, warrant1)}. Also, another bi-LSTM module encoding \emph{claim}, \emph{warrant} and \emph{reason} is added. The output vectors of each pair and bi-LSTM are concatenated after average and max pooling and the final prediction is made through feed-forward layers.
+\paragraph{GIST} uses pretrained word2vec embeddings as well as the ESIM model \cite{Chen.et.al.2017.ACL.ESIM}, trained on the SNLI \cite{Bowman.et.al.2015} and MultiNLI \cite{nangia-EtAl:2017:RepEval} datasets. The parameters have been frozen afterwards. Then, pairs of sentences are fed into the the ESIM model. For \emph{warrant0}, for example, these pairs are \emph{(claim, warrant0)}, \emph{(warrant0, reason)}, and \emph{(warrant0, warrant1)}. Also, another bi-LSTM module encoding \emph{claim}, \emph{warrant}, and \emph{reason} is added. The output vectors of each pair and the bi-LSTM are concatenated after averaging and max pooling, and the final prediction is made through feed-forward layers.
 
 
 \paragraph{HHU}
-encoded \emph{reason}, \emph{claim}, and \emph{warrants} using a bidirectional LSTM. Next, \emph{warrant0}, \emph{reason}, and \emph{claim} are fed into another LSTM; similarly, \emph{warrant1}, \emph{reason}, and \emph{claim} to another parallel LSTM. Both branches were followed by dropout and two common dense layers. Embeddings were pre-trained in four different flavors, namely fasttext-embeddings (trained on the entire Wikipedia corpus), two embeddings trained on the task's dataset using the word2vec skip-gram model with different dimensionality and another word2vec model also based on the tasks vocabulary but augmented with related articles from Wikipedia. For all four embeddings, different parameter combinations and seeds were used to train an ensemble of 623 models in total.
+encodes \emph{reason}, \emph{claim}, and \emph{warrants} using a bi-directional LSTM. Next, \emph{warrant0}, \emph{reason}, and \emph{claim} are fed into another LSTM; similarly, \emph{warrant1}, \emph{reason}, and \emph{claim} to another LSTM in parallel. Both branches are followed by a dropout and two common dense layers. Embeddings have been pre-trained in four different flavors: fasttext-embeddings trained on the entire Wikipedia corpus, two embeddings trained on the task's dataset using the word2vec skip-gram model with different dimensionalities, and another word2vec model based on the tasks vocabulary but augmented with related articles from Wikipedia. For all embeddings, different parameter combinations and seeds were used to train an ensemble of 623 models in total.
+
 
 \paragraph{ITNLP-ARC}
-first encodes sentences (\emph{warrant}, \emph{reason}, \emph{claim}) using LSTM, then use attention to merge the reason vector with the claim vector. A shared weight matrix then holds the relationship between the \emph{warrant} and the attention vector, from which the maximum is chosen as the answer. Finally, an ensemble method is used for the final vote.
+first encodes sentences (\emph{warrant}, \emph{reason}, \emph{claim}) using LSTMs. Attention is used to merge the \emph{reason} vector with the \emph{claim} vector. A shared weight matrix then holds the relationship between the \emph{warrant} and the attention vector, from which the maximum is chosen as the answer. An ensemble method is used for the final vote.
 
 
 \paragraph{lyb3b}
-encodes sentences using word2vec or GloVe embeddings and bi-directional LSTM. The instances are then treated as positive or negative, depending on the correct training \emph{warrant.} The network then combines the \emph{warrant} with \emph{reason}, \emph{claim}, and \emph{additional info}. Finally, a fully-connected layer is used to decide whether the instance is correct.
+encodes sentences using word2vec or GloVe embeddings and a bi-directional LSTM. The instances are treated as positive or negative, depending on the correct training \emph{warrant}. The network then combines the \emph{warrant} with the \emph{reason}, \emph{claim}, and \emph{additional info}. Finally, a fully-connected layer is used to decide whether the instance is correct.
 
 
 \paragraph{mingyan}
-first performs a word-by-word attention which is then fused with the original representation. Self-attention pooling then produces a single vector fed into a sigmoid function, trained with a cross-entropy loss.
+performs a word-by-word attention that is fused with the original representation then. Self-attention pooling produces a single vector fed into a sigmoid function, trained with cross-entropy loss.
 
 
 \paragraph{NLITrans}
-attempts to leverage transfer of semantic knowledge from a bidirectional LSTM encoder with max pooling trained on the MultiNLI corpus \cite{nangia-EtAl:2017:RepEval}; this yields a small performance boost on the development set. All sentences (\emph{claim}, \emph{reason}, \emph{warrant0}, and \emph{warrant1}) are encoded with this transferred encoder. Then the task-specific representations of the `argument', each with a different \emph{warrant}, is learned via a fully-connected layers and a final linear classifier decides which one of the two \emph{warrants} fits the argument.
+attempts to leverage the transfer of semantic knowledge from a bi-directional LSTM encoder with max pooling trained on the MultiNLI corpus \cite{nangia-EtAl:2017:RepEval}. This yields a small performance boost on the development set. All sentences (\emph{claim}, \emph{reason}, \emph{warrant0}, and \emph{warrant1}) are encoded with this a transferred encoder. Then, task-specific representations of two `arguments', one for each warrant, are learned via fully-connected layers. A final linear classifier decides which warrant fits the argument. It turned out important that the arguments are given separate scores by the same parameters tasked to perform argument-warrant matching, before being softmaxed.
 
 
 \paragraph{RW2C}
-proposes two neural network models. The first one classifies each \emph{warrant} as true or false separately and choose the one with higher confidence as the right one. The second model makes a decision given two warrant candidates. The final prediction is an ensemble over the previous predictions. Both models represent sentences using CNN.
+uses two neural networks. The first one classifies each \emph{warrant} as true or false separately and chooses the one with higher confidence as the right one. The second model makes a decision given two warrant candidates. The final prediction is an ensemble over the previous predictions. Both models represent sentences using a CNN.
 
 
 \paragraph{SNU\_IDS}
-decides whether a logic built on a set of given sentences (\emph{claim}, \emph{reason}, and \emph{warrant}) is plausible. It accepts only one \emph{warrant} at a time and outputs a score on the warrant's validity. The intuition is that the model can learn the more meaningful semantics of natural language when it judges whether the logic of the given sequence is correct, instead of just selecting the more probable one between the two candidate warrants. The model consists of an encoding layer (GloVe embeddings \cite{Pennington.2014} and CoVe sentence encoder \cite{McCann.et.al.2017.NIPS}), a `localization' layer (a set of fully connected layers), and output layers that combine calculating several arithmetic measures over the input representation and compute a final score using logistic layer on the top.
+decides whether a logic built on a set of given sentences (\emph{claim}, \emph{reason}, and \emph{warrant}) is plausible. It accepts only one \emph{warrant} at a time and outputs a score on the warrant's validity. The intuition is that the model can learn what has more meaningful semantics of natural language when it judges whether the logic of the given sequence is correct, instead of just selecting the more probable warrant among two candidates. The model consists of an encoding layer with GloVe embeddings \cite{Pennington.2014} and a CoVe sentence encoder \cite{McCann.et.al.2017.NIPS}, a `localization' layer (a set of fully connected layers), and output layers that combine calculating several arithmetic measures over the input representation and compute a final score using a logistic layer on  top.
 
 
 \paragraph{TakeLab}
-preprocess sentences from the dataset, applies some arithmetic, converts them to Skip-Thought vectors, and feeds them into an SVM classifier with fine-tuned hyperparameters. Skip-Thought vectors are sentence representation vectors whose encoder and decoder, with an identical structure to RNN encoder-decoders used for neural machine translation, are trained on a large corpus of books unbiased in domain \cite{Kiros.et.al.2015}.
+preprocesses sentences from the data\-set, applies some arithmetic, converts them to Skip-Thought vectors, and feeds them into an SVM classifier with fine-tuned hyperparameters. The Skip-Thought vectors are sentence representation vectors whose encoder and decoder (with an identical structure to RNN encoder-decoders used for neural machine translation) are trained on a large corpus of books unbiased in domain \cite{Kiros.et.al.2015}.
 
 
 \paragraph{TRANSRW}
-learns the semantic representation of sentences (\emph{reason}, \emph{warrants}, \emph{claim}) using convolutional neural network. They assume that a composition of the \emph{reason} and the \emph{warrant} is close to the representation of the \emph{claim}.
+learns the semantic representation of sentences (\emph{reason}, \emph{warrants}, \emph{claim}) using a convolutional neural network. The assumption behind is that a composition of the \emph{reason} and the \emph{warrant} is close to the representation of the \emph{claim}.
 
 
 \paragraph{UniMelb}
-combines 3 stacked LSTMs, one for the \emph{reason}, one for the \emph{claim}, and one shared Siamese Network for the 2 \emph{warrants} under investigation. It generates semantic feature vectors that serve as input to shared compressed feature space by using simple vector operations and semantic similarity classification to enforce the interrelationships between them. In doing so, the aim is to learn a form of ``generative implication" through the semantic feature vectors which are able to correctly encode the interrelationships between a reason, a claim, and both the correct and incorrect warrants. The data are augmented by utilizing WordNet synonym fuzzing.
+combines 3 stacked LSTMs, one for the \emph{reason}, one for the \emph{claim}, and one shared Siamese Network for the two \emph{warrants} under investigation. It generates semantic feature vectors that serve as input to a shared compressed feature space by using simple vector operations and semantic similarity classification to enforce the interrelationships between them. In doing so, the aim is to learn a form of ``generative implication" through the semantic feature vectors. The vectors are able to correctly encode the interrelationships between a reason, a claim, and both the correct and incorrect warrants. The given data is augmented by utilizing WordNet synonym fuzzing.
 
 
 \paragraph{YNU-HPCC}
-uses a bi-directional LSTM with attention whose input is divided into three parts (\emph{reasons}, \emph{claim}, and both \emph{warrants}). To prevent overfitting, dropout is added before the final layer.
+uses a bi-directional LSTM with attention whose input is divided into three parts (\emph{claim}, \emph{reason}, and both \emph{warrants}). To prevent overfitting, dropout is added before the final layer.
 
 
 \paragraph{YNU\_Deep}
-combines the \emph{reason} and the \emph{claim} with a so-called `story' feature; this feature is merged with the \emph{warrant}. The network is a bidirectional LSTM with attention and uses GloVe embeddings. Ensemble technology is put on top to mitigate the small size of the data.
+combines the \emph{reason} and the \emph{claim} with a so-called `story' feature. The story feature is merged with the \emph{warrant}. The network is a bi-directional LSTM with attention and uses GloVe embeddings. Ensemble technology is put on top to mitigate the small size of the data.
 
 
 \paragraph{ztangfdu}
-first concatenates the \emph{claim} and the \emph{reason} as one sentence named `sent1', and denotes the correct \emph{warrant} as `sent2' and wrong \emph{warrant} as `sent3', respectively. Then the output of a LSTM layer with non-trained embeddings represents each of the sentences. After applying mean pooling to transform the output matrices to vectors, two fully connected layers cater for obtaining the difference score between `sent2' and `sent3', whose minimization is the core of the loss function.
+first concatenates the \emph{claim} and the \emph{reason} as one sentence named `sent1', and denotes the correct \emph{warrant} as `sent2' and the wrong \emph{warrant} as `sent3', respectively. The output of an LSTM layer with non-trained embeddings then represents each of the sentences. After applying mean pooling to transform the output matrices to vectors, two fully connected layers cater for obtaining the difference score between `sent2' and `sent3', whose minimization is the core of the loss function.
 
