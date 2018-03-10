@@ -42,7 +42,7 @@ performs a word-by-word attention that is fused with the original representation
 
 
 \paragraph{NLITrans}
-attempts to leverage the transfer of semantic knowledge from a bi-directional LSTM encoder with max pooling trained on the MultiNLI corpus \cite{nangia-EtAl:2017:RepEval}. This yields a small performance boost on the development set. All sentences (\emph{claim}, \emph{reason}, \emph{warrant0}, and \emph{warrant1}) are encoded with this a transferred encoder. Then, task-specific representations of two `arguments', one for each warrant, are learned via fully-connected layers. A final linear classifier decides which warrant fits the argument. It turned out important that the arguments are given separate scores by the same parameters tasked to perform argument-warrant matching, before being softmaxed.
+attempts to leverage the transfer of semantic knowledge from a bi-directional LSTM encoder with max pooling trained on the MultiNLI corpus \cite{nangia-EtAl:2017:RepEval}. This yields a small performance boost on the development set. All sentences (\emph{claim}, \emph{reason}, \emph{warrant0}, and \emph{warrant1}) are encoded with this a transferred encoder. Then, task-specific representations of two `arguments', one for each warrant, are learned via fully-connected layers. A final linear layer generates an independent score representing the fit of each warrant to the argument. These are concatenated and passed through softmax to generate a probability distribution over the two warrants.
 
 
 \paragraph{RW2C}
