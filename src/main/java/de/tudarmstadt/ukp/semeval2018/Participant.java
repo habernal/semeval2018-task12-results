@@ -109,6 +109,10 @@ public class Participant
         this.systemName = systemName;
     }
 
+    public String getShownNameLaTeX() {
+        return getShownName().replace("_", "\\_");
+    }
+
     public String getShownName()
     {
         return shownName;

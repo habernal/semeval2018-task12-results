@@ -15,7 +15,7 @@
 	<participant username="ztangfdu" submissionID="437724"
 	             systemName="Neural Matching Models for Argument Reasoning Comprehension Task"
 	             shownName="ztangfdu" />
-	<participant username="RANDOM_BASELINE" submissionID="437684" systemName="Random baseline" />
+	<participant username="RANDOM_BASELINE" submissionID="437684" systemName="Random bsl." />
 	<participant username="aj" submissionID="437591" systemName="UniMelb" />
 	<participant username="hanshan" submissionID="437296"
 	             systemName="NLITrans: Natural Language Inference Transfer model"
@@ -29,5 +29,5 @@
 	<participant username="Joker" submissionID="435053" systemName="" noResponse="true" />
 	<participant username="lyb3b" submissionID="437000" systemName="lyb3b" />
 	<participant username="YNU_Deep" submissionID="437321" systemName="YNU_Deep" />
-	<participant username="blcu_nlp" submissionID="438097" systemName="" noResponse="true" />
+	<participant username="blcu_nlp" submissionID="438097" systemName="blcu_nlp" />
 </metadata>

@@ -23,9 +23,12 @@ import com.google.common.collect.TreeBasedTable;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Ivan Habernal
@@ -33,9 +36,18 @@ import java.util.stream.Collectors;
 public class Main
 {
 
+    static DecimalFormat df;
+
+    static {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
+        df = (DecimalFormat) nf;
+        df.applyPattern("#.00");
+    }
+
     /**
      * Prints the final rank of all participants, ordered by accuracy.
-     *  @param participants participants
+     *
+     * @param participants participants
      * @param goldData     gold data
      * @param latex
      */
@@ -62,17 +74,20 @@ public class Main
 
         if (latex) {
             System.out.println("\\begin{tabular}{rlr}");
-            System.out.println("\\textbf{Rank} & \\textbf{System} & \\textbf{Accuracy} \\\\ \\hline");
+            System.out
+                    .println("\\textbf{Rank} & \\textbf{System} & \\textbf{Accuracy} \\\\ \\hline");
             printResultTable(entries, "%s & %s & %.3f \\\\%n", participant -> {
                 String name = participant.getShownName().replace("_", "\\_");
                 if (participant.getNoResponse()) {
                     return name + "*";
-                } else {
+                }
+                else {
                     return name;
                 }
             });
             System.out.println("\\end{tabular}");
-        } else {
+        }
+        else {
             printResultTable(entries, "%s %s  %.3f%n", Participant::getShownName);
         }
     }
@@ -87,8 +102,7 @@ public class Main
             for (Participant p : participantsWithSameAccuracy) {
                 System.out.printf(Locale.ENGLISH, lineFormat,
                         StringUtils.leftPad(String.valueOf(rank), 2),
-                        StringUtils.leftPad(participantPrinter.apply(p), 16),
-                        entry.getKey());
+                        StringUtils.leftPad(participantPrinter.apply(p), 16), entry.getKey());
             }
 
             rank += participantsWithSameAccuracy.size();
@@ -111,8 +125,7 @@ public class Main
             long failure = evaluatePredictions.values().stream().filter(val -> !val).count();
 
             System.out.printf(Locale.ENGLISH, "%s\t%d\t%d%n",
-                    StringUtils.leftPad(p.getShownName(), 16),
-                    success, failure);
+                    StringUtils.leftPad(p.getShownName(), 16), success, failure);
         });
     }
 
@@ -209,15 +222,49 @@ public class Main
             }
         }
 
-        String header = pValueTable.columnKeySet().stream().map(Participant::getShownName)
-                .collect(Collectors.joining("\t"));
-        System.out.println("\t" + header);
+        // LaTeX table header
+        int numberOfColumns = pValueTable.columnKeySet().size();
+        System.out.println("\\begin{tabular*}{\\linewidth}{" +
+                // generate latex column description (number of "l"'s)
+                Stream.generate(() -> "l").limit(numberOfColumns + 1)
+                        .collect(Collectors.joining("")) + "}\n\\toprule");
+
+        String header = pValueTable.columnKeySet().stream()
+                .map(p -> "\\rotatebox{90}{" + p.getShownNameLaTeX() + "}")
+                .collect(Collectors.joining(" & "));
+        System.out.println(" & " + header + " \\\\");
+
         pValueTable.rowMap().forEach((participant, participantDoubleMap) -> {
-            System.out.printf(participant.getShownName() + "\t");
-            System.out.println(participantDoubleMap.values().stream()
-                    .map(d -> String.format(Locale.ENGLISH, "%.4f", d))
-                    .collect(Collectors.joining("\t")));
+            System.out.print(participant.getShownNameLaTeX() + " & ");
+            List<String> cells = participantDoubleMap.entrySet().stream()
+                    .map(participantDoubleEntry -> {
+                        Participant column = participantDoubleEntry.getKey();
+                        Double value = participantDoubleEntry.getValue();
+
+                        if (column.getShownName().equals(participant.getShownName())) {
+                            // accuracy
+                            return "\\textbf{" + df.format(value) + "}";
+                        }
+                        else {
+                            // p-value
+                            return df.format(value);
+                        }
+                    }).collect(Collectors.toList());
+
+            // we need to add empty cells too
+            for (int i = cells.size(); i < numberOfColumns; i++) {
+                cells.add(" ");
+            }
+
+            System.out.print(cells.stream().collect(Collectors.joining(" & ")));
+
+            //            System.out.println(participantDoubleMap.values().stream()
+            //                    .map(d -> df.format(d))
+            //                    .collect(Collectors.joining("\t")));
+            System.out.println(" \\\\");
         });
+
+        System.out.println("\\end{tabular*}");
     }
 
     public static void main(String[] args)
@@ -238,7 +285,10 @@ public class Main
 
         //        problematicInstanceDistribution(trueParticipants, goldData);
         //        printSuccessFailureCounts(participants, goldData);
-        //        runApproximateRandomizationTest(participants, goldData);
+
+        List<Participant> participantsForComparison = participants.stream()
+                .filter(p -> !p.isWithdrawn() && !p.isNoResponse()).collect(Collectors.toList());
+        runApproximateRandomizationTest(participantsForComparison, goldData);
     }
 
 }
