@@ -15,7 +15,7 @@
 	<participant username="ztangfdu" submissionID="437724"
 	             systemName="Neural Matching Models for Argument Reasoning Comprehension Task"
 	             shownName="ztangfdu" />
-	<participant username="RANDOM_BASELINE" submissionID="437684" systemName="Random bsl." />
+	<participant username="RANDOM_BASELINE" submissionID="437684" systemName="Random bsl." baseline="true"/>
 	<participant username="aj" submissionID="437591" systemName="UniMelb" />
 	<participant username="hanshan" submissionID="437296"
 	             systemName="NLITrans: Natural Language Inference Transfer model"

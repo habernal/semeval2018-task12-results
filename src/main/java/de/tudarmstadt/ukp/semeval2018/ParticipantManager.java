@@ -51,12 +51,14 @@ public class ParticipantManager
                 String systemName = el.getAttributeValue("systemName");
                 boolean noResponse = "true".equals(el.getAttributeValue("noResponse"));
                 boolean withdrawn = "true".equals(el.getAttributeValue("withdrawn"));
+                boolean isBaseline = "true".equals(el.getAttributeValue("baseline"));
 
                 Participant participant = new Participant(username, submissionID);
                 participant.setWithdrawn(noResponse);
                 participant.setNoResponse(noResponse);
                 participant.setSystemName(systemName);
                 participant.setWithdrawn(withdrawn);
+                participant.setBaseline(isBaseline);
 
                 String shownName = el.getAttributeValue("shownName");
                 if (shownName != null) {

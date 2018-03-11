@@ -38,6 +38,8 @@ public class Participant
     private SortedMap<String, Integer> predictions;
     private boolean noResponse;
 
+    private boolean isBaseline;
+
     public Participant(String lineFromMetadataFile)
             throws IllegalArgumentException
     {
@@ -86,7 +88,8 @@ public class Participant
     {
         return "Participant{" + "userName='" + userName + '\'' + ", submissionID='" + submissionID
                 + '\'' + ", withdrawn=" + withdrawn + ", shownName='" + shownName + '\''
-                + ", systemName='" + systemName + '\'' + '}';
+                + ", systemName='" + systemName + '\'' + ", noResponse=" + noResponse
+                + ", isBaseline=" + isBaseline + '}';
     }
 
     public boolean isWithdrawn()
@@ -136,5 +139,15 @@ public class Participant
     public boolean getNoResponse()
     {
         return noResponse;
+    }
+
+    public boolean isBaseline()
+    {
+        return isBaseline;
+    }
+
+    public void setBaseline(boolean baseline)
+    {
+        isBaseline = baseline;
     }
 }
