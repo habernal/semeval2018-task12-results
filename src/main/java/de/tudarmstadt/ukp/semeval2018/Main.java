@@ -161,6 +161,19 @@ public class Main
                 list.stream().map(stringIntegerEntry -> stringIntegerEntry.getValue().toString())
                         .collect(Collectors.joining(", ")));
 
+        // counts by successful systems
+        List<Integer> counts = list.stream().map(Map.Entry::getValue).collect(Collectors.toList());
+//        Map<Integer, Integer> histogram = new TreeMap<>();
+//        counts.forEach(i -> {
+//            histogram.put(i, histogram.getOrDefault(i, 0) + 1);
+//        });
+
+
+        System.out.println("Run this in R-Studio to get the histogram");
+//        System.out.println("a = c(" + histogram.values().stream().map(Object::toString).collect(Collectors.joining(", ")) + ")");
+        System.out.println("counts <- table(c(" + counts.stream().map(Object::toString).collect(Collectors.joining(", ")) + "))");
+        System.out.println("barplot(counts, xlab=\"Number of systems that solved a particular instance\", ylab=\"Correct instances\", main=\"Distribution of correctly classified instances among all systems\", cex.lab=1.5, cex.main=1.3)");
+
     }
 
     /**
@@ -283,12 +296,15 @@ public class Main
         // latex
         finalRank(participants, goldData, true);
 
-        //        problematicInstanceDistribution(trueParticipants, goldData);
-        //        printSuccessFailureCounts(participants, goldData);
+                //        printSuccessFailureCounts(participants, goldData);
 
         List<Participant> participantsForComparison = participants.stream()
                 .filter(p -> !p.isWithdrawn() && !p.isNoResponse()).collect(Collectors.toList());
+        /*
         runApproximateRandomizationTest(participantsForComparison, goldData);
+        */
+
+        problematicInstanceDistribution(participantsForComparison, goldData);
     }
 
 }
